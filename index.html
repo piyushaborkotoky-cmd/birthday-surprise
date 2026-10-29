@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A little something for you ♡</title>
+<style>
+:root{
+ --ivory:#f7f0e5; --ivory2:#fffaf2; --red:#a91f36; --red2:#d94355;
+ --gold:#c49a4a; --gold-light:#efd9a0; --ink:#4b2630; --muted:#866d68;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--ivory);color:var(--ink)}
+body{font-family:Georgia,"Times New Roman",serif;overflow-x:hidden}
+button{font:inherit}
+#app{min-height:100svh;position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 35%,#fffaf3 0%,var(--ivory) 65%,#efe0cf 100%)}
+.screen{min-height:100svh;display:none;align-items:center;justify-content:center;padding:28px 20px;position:relative}
+.screen.active{display:flex;animation:fadeIn .85s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--red);font-style:italic}
+.title{font-size:clamp(42px,9vw,86px);font-weight:400;line-height:.94;letter-spacing:-.045em;margin:18px 0;color:var(--red)}
+.subtitle{font-size:clamp(14px,2.5vw,18px);line-height:1.8;color:var(--muted);max-width:500px;margin:0 auto}
+.gold-line{height:2px;width:140px;margin:24px auto;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.primary{border:1px solid var(--gold);background:var(--red);color:#fff8ed;padding:14px 24px;letter-spacing:.08em;text-transform:uppercase;font-size:11px;cursor:pointer;box-shadow:0 7px 18px #8c172326;transition:transform .25s,box-shadow .25s}
+.primary:hover{transform:translateY(-3px);box-shadow:0 11px 24px #8c172338}
+.ghost{border:1px solid #d7c4a4;background:#fffaf2aa;color:var(--red);padding:12px 18px;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;font-size:10px}
+.hero{text-align:center;width:min(760px,100%);position:relative;z-index:1}
+.heart-wrap{height:190px;display:grid;place-items:center;perspective:500px;margin:4px 0 12px}
+.heart3d{position:relative;width:112px;height:100px;filter:drop-shadow(0 18px 16px #a91f3630);animation:heartFloat 3s ease-in-out infinite;transform-style:preserve-3d}
+.heart3d:before,.heart3d:after{content:"";position:absolute;top:0;width:58px;height:90px;border-radius:58px 58px 0 0;background:linear-gradient(105deg,#f17c86 0%,#d83c50 38%,#a91f36 75%,#741629 100%);box-shadow:inset 5px 3px 7px #ffd6d67a,inset -5px -3px 9px #6d102b5c}
+.heart3d:before{left:55px;transform:rotate(-45deg);transform-origin:0 100%}
+.heart3d:after{left:0;transform:rotate(45deg);transform-origin:100% 100%}
+.heart-shine{position:absolute;z-index:2;top:17px;left:28px;width:24px;height:12px;border-radius:50%;background:#fff8e9b5;filter:blur(1px);transform:rotate(-32deg)}
+@keyframes heartFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(2deg)}}
+.decor-heart{position:absolute;color:#d85c66;opacity:.45;animation:drift 7s ease-in-out infinite;pointer-events:none}
+@keyframes drift{0%,100%{transform:translateY(0) rotate(-8deg);opacity:.25}50%{transform:translateY(-22px) rotate(10deg);opacity:.65}}
+#shoot-stage{width:min(680px,100%);margin:10px auto 0;position:relative;height:185px;touch-action:none;user-select:none}
+#shoot-stage svg{width:100%;height:100%;overflow:visible}
+#arrow{cursor:grab;touch-action:none}
+#arrow:active{cursor:grabbing}
+.instruction{font-size:11px;letter-spacing:.19em;text-transform:uppercase;color:var(--muted);margin-top:0}
+.tiny{font-size:11px;color:#9d837b;letter-spacing:.1em}
+#burst{position:absolute;inset:0;pointer-events:none}
+.particle{position:absolute;font-size:18px;animation:burst 1.5s ease-out forwards}
+@keyframes burst{0%{transform:translate(0,0) scale(.4);opacity:0}15%{opacity:1}100%{transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(1.2);opacity:0}}
+.reveal-card{width:min(850px,100%);text-align:center;padding:clamp(28px,7vw,72px) 18px;position:relative}
+.reveal-card .title{font-size:clamp(50px,12vw,112px);text-shadow:0 3px 0 #f0d5a5;animation:revealTitle 1.2s cubic-bezier(.2,.8,.2,1) both}
+@keyframes revealTitle{from{opacity:0;letter-spacing:.18em;transform:scale(.88)}to{opacity:1;letter-spacing:-.045em;transform:scale(1)}}
+.name{color:var(--red);font-size:clamp(28px,5vw,48px);font-style:italic;margin:10px 0}
+.content-card{width:min(650px,100%);background:#fffaf2d9;border:1px solid #ddc79f;padding:clamp(24px,6vw,52px);box-shadow:0 18px 60px #6e3b2710;text-align:center;position:relative}
+.content-card:before{content:"";position:absolute;inset:8px;border:1px solid #ead9b8;pointer-events:none}
+.message-count{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:22px}
+.message-title{font-size:clamp(30px,6vw,50px);font-weight:400;color:var(--red);margin:0 0 18px;line-height:1.1}
+.message-body{white-space:pre-wrap;font-size:clamp(16px,2.6vw,20px);line-height:1.9;color:#71534e;min-height:70px}
+.controls{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:28px}
+.photo-placeholder{border:1px dashed #c5a768;padding:20px;color:#9a7c52;font-size:12px;margin:20px auto;max-width:280px}
+.final-heart{font-size:56px;color:var(--red);text-shadow:0 8px 16px #a91f3626;animation:heartFloat 2.5s ease-in-out infinite}
+.corner{position:absolute;width:100px;height:100px;border-color:#d4b46e;opacity:.65}
+.corner.tl{top:22px;left:22px;border-top:1px solid;border-left:1px solid}
+.corner.br{bottom:22px;right:22px;border-bottom:1px solid;border-right:1px solid}
+
+/* Starry wish scene: original, anime-inspired night-sky atmosphere */
+#star-scene{background:linear-gradient(180deg,#10142e 0%,#24274c 46%,#653d59 100%);color:#fff7e8;overflow:hidden}
+#star-scene .star-copy{position:relative;z-index:3;text-align:center;max-width:650px;padding:20px}
+#star-scene .eyebrow{color:#efd9a0}
+#star-scene .star-heading{font-size:clamp(32px,7vw,64px);font-weight:400;line-height:1.08;color:#fff5e6;text-shadow:0 0 24px #ffdba866;margin:16px 0}
+#star-scene .star-instruction{font-size:12px;letter-spacing:.12em;color:#f3d8d9;line-height:1.8}
+#starfield{position:absolute;inset:0;overflow:hidden}
+.sky-star{position:absolute;border:0;padding:0;background:transparent;color:#fff8d9;cursor:pointer;font-size:var(--size,16px);line-height:1;filter:drop-shadow(0 0 6px #fff4c4);animation:twinkle var(--twinkle,3s) ease-in-out infinite;transition:transform .2s,color .2s;z-index:2}
+.sky-star:hover{transform:scale(1.7);color:#ffe4a0}
+.sky-star.used{pointer-events:none;opacity:.18}
+@keyframes twinkle{0%,100%{opacity:.48;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+.shooting-star{position:absolute;width:7px;height:7px;border-radius:50%;background:#fff8d6;box-shadow:0 0 12px 5px #fff4c4;z-index:4;pointer-events:none;animation:shootAcross 1.1s ease-in forwards}
+.shooting-star:after{content:"";position:absolute;right:3px;top:2px;width:170px;height:3px;transform:rotate(-28deg);transform-origin:right center;background:linear-gradient(90deg,transparent,#ffeab2,#fff8d6);filter:blur(.5px)}
+@keyframes shootAcross{from{transform:translate(0,0) scale(.6);opacity:0}10%{opacity:1}to{transform:translate(260px,-145px) scale(.15);opacity:0}}
+.wish-pop{position:absolute;z-index:5;max-width:min(340px,78vw);padding:16px 20px;background:#fff8e9f2;color:#8d2638;border:1px solid #d5b56b;box-shadow:0 12px 40px #05091e66;text-align:center;font-size:clamp(15px,2.8vw,20px);line-height:1.5;animation:wishAppear .55s cubic-bezier(.2,.8,.2,1) both;pointer-events:none}
+.wish-pop:before{content:"✦  A WISH FOR YOU  ✦";display:block;font:10px ui-monospace,monospace;letter-spacing:.16em;color:#b58b3d;margin-bottom:8px}
+@keyframes wishAppear{from{opacity:0;transform:translateY(15px) scale(.88)}to{opacity:1;transform:translateY(0) scale(1)}}
+.sky-silhouette{position:absolute;bottom:-1px;left:0;width:100%;height:28%;z-index:1;pointer-events:none;background:linear-gradient(160deg,transparent 0 28%,#17192f 28.3% 100%);clip-path:polygon(0 55%,12% 45%,23% 60%,35% 30%,49% 56%,62% 36%,74% 54%,88% 26%,100% 45%,100% 100%,0 100%)}
+.sky-hill{position:absolute;bottom:-1px;left:0;width:100%;height:16%;z-index:1;background:#101426;clip-path:polygon(0 35%,17% 15%,31% 38%,48% 20%,66% 43%,84% 10%,100% 32%,100% 100%,0 100%)}
+#star-progress{font-size:11px;letter-spacing:.14em;color:#efd9a0;margin-top:16px}
+
+
+/* Final Poké Ball gift reveal */
+#pokeball-scene{background:radial-gradient(ellipse at center,#fffaf1 0%,#f3e6d4 75%,#ead8c1 100%)}
+.poke-wrap{width:230px;height:230px;position:relative;margin:24px auto 28px;cursor:pointer;perspective:800px;filter:drop-shadow(0 18px 20px #8b253326)}
+.poke-ball{position:absolute;inset:0;border-radius:50%;overflow:hidden;border:5px solid #4b2930;background:#fff8ec;transition:transform .6s,opacity .6s}
+.poke-red{position:absolute;left:0;top:0;width:100%;height:50%;background:linear-gradient(140deg,#e65d65,#b31f37 70%,#841b30);border-bottom:5px solid #4b2930}
+.poke-band{position:absolute;left:0;top:calc(50% - 5px);width:100%;height:11px;background:#4b2930;z-index:2}
+.poke-button{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:58px;height:58px;border-radius:50%;background:linear-gradient(145deg,#fffdf7,#dfcba6);border:5px solid #4b2930;z-index:3;box-shadow:inset 0 0 0 5px #fff8e9,0 3px 8px #54212b44}
+.poke-button:after{content:"";position:absolute;inset:13px;border-radius:50%;background:linear-gradient(145deg,#d9bd7c,#a77c35);border:1px solid #fff0c6}
+.poke-top,.poke-bottom{position:absolute;left:-3%;width:106%;height:54%;z-index:4;transition:transform .95s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+.poke-top{top:-3%;background:linear-gradient(140deg,#e85c66,#b21e36 72%,#83182c);border:5px solid #4b2930;border-radius:120px 120px 20px 20px;transform-origin:50% 100%;border-bottom-width:7px}
+.poke-bottom{bottom:-3%;background:linear-gradient(140deg,#fffdf7,#eadbc1);border:5px solid #4b2930;border-radius:20px 20px 120px 120px;transform-origin:50% 0%;border-top-width:7px}
+.poke-wrap.opened .poke-top{transform:translateY(-115px) rotateX(48deg) rotateZ(-9deg)}
+.poke-wrap.opened .poke-bottom{transform:translateY(115px) rotateX(-40deg) rotateZ(7deg)}
+.poke-wrap.opened .poke-ball{transform:scale(.82);opacity:.35}
+.poke-ring{position:absolute;left:50%;top:50%;width:0;height:0;transform:translate(-50%,-50%) rotate(-15deg);border:4px solid #d2a64f;border-radius:50%;opacity:0;z-index:5;box-shadow:0 0 0 4px #f7e7b6,0 0 24px #d4aa58}
+.poke-wrap.opened .poke-ring{animation:ringExpand 1s .35s ease-out forwards}
+@keyframes ringExpand{0%{width:20px;height:20px;opacity:0;transform:translate(-50%,-50%) rotate(-15deg) scale(.2)}45%{opacity:1}100%{width:285px;height:185px;opacity:1;transform:translate(-50%,-50%) rotate(-15deg) scale(1)}}
+.poke-reveal{opacity:0;transform:translateY(12px) scale(.92);transition:opacity .6s .7s,transform .6s .7s;pointer-events:none}
+.poke-wrap.opened + .poke-reveal{opacity:1;transform:translateY(0) scale(1)}
+.poke-reveal h2{font-size:clamp(38px,8vw,66px);font-weight:400;color:#a91f36;margin:8px 0;text-shadow:0 2px #efd9a0}
+.poke-reveal p{color:#866d68;line-height:1.7}
+
+
+/* Poké Ball surprise and ring reveal */
+#pokeball-screen{background:radial-gradient(circle at 50% 40%,#fffaf2 0%,#f7f0e5 62%,#ead9c1 100%)}
+.gift-wrap{text-align:center;width:min(700px,100%);position:relative;z-index:1}
+.gift-title{font-size:clamp(34px,7vw,62px);font-weight:400;color:var(--red);margin:18px 0}
+.pokeball-button{position:relative;width:180px;height:180px;border:0;background:transparent;padding:0;margin:20px auto 24px;display:block;cursor:pointer;filter:drop-shadow(0 15px 13px #70202b2b);transition:transform .25s}
+.pokeball-button:hover{transform:translateY(-5px) rotate(-4deg)}
+.pokeball{position:absolute;inset:0;border-radius:50%;overflow:hidden;border:5px solid #5a2430;background:linear-gradient(to bottom,#c62d42 0%,#a91f36 48%,#5a2430 49%,#fffaf2 51%,#e9dfd1 100%);box-shadow:inset -12px -9px 14px #3d101b44,inset 9px 7px 12px #ffffff5c}
+.pokeball:before{content:"";position:absolute;left:0;right:0;top:47%;height:12px;background:#55202a;border-top:2px solid #f4d9ad;border-bottom:2px solid #f4d9ad}
+.ball-button{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:52px;height:52px;border-radius:50%;background:radial-gradient(circle at 35% 28%,#fffdf4 0 17%,#e5d6bd 18% 25%,#fffaf2 26% 50%,#9e6b62 52% 57%,#f6ead6 59%);border:4px solid #5a2430;box-shadow:0 0 0 3px #f1d9a4}
+.ball-shine{position:absolute;top:23px;left:34px;width:42px;height:17px;border-radius:50%;background:#ffffff77;transform:rotate(-28deg);filter:blur(1px)}
+.ball-top,.ball-bottom{position:absolute;left:50%;width:170px;height:85px;border:5px solid #5a2430;display:none;z-index:2}
+.ball-top{top:0;transform:translateX(-50%);border-radius:95px 95px 0 0;background:linear-gradient(120deg,#e34a59,#a91f36);transform-origin:50% 100%}
+.ball-bottom{bottom:0;transform:translateX(-50%);border-radius:0 0 95px 95px;background:linear-gradient(120deg,#fffaf2,#e7d8c6);transform-origin:50% 0}
+#pokeball-screen.revealed .ball-top{display:block;animation:topOpen .8s cubic-bezier(.2,.8,.2,1) forwards}
+#pokeball-screen.revealed .ball-bottom{display:block;animation:bottomOpen .8s cubic-bezier(.2,.8,.2,1) forwards}
+#pokeball-screen.revealed .pokeball{opacity:0;transition:opacity .2s .1s}
+@keyframes topOpen{to{transform:translate(-50%,-70px) rotate(-14deg)}}
+@keyframes bottomOpen{to{transform:translate(-50%,70px) rotate(14deg)}}
+.ring-reveal{opacity:0;transform:translateY(20px) scale(.6);transition:opacity .6s .45s,transform .7s .45s cubic-bezier(.2,.8,.2,1);margin:0 auto}
+#pokeball-screen.revealed .ring-reveal{opacity:1;transform:translateY(0) scale(1)}
+.ring{width:84px;height:84px;border-radius:50%;margin:0 auto 14px;position:relative;border:10px solid #d5ae58;background:transparent;box-shadow:inset 0 0 0 2px #fff0b9,0 8px 20px #9b6c2844}
+.ring:before{content:"";position:absolute;width:25px;height:25px;left:50%;top:-16px;transform:translateX(-50%) rotate(45deg);background:linear-gradient(135deg,#fff8e6,#d9b15b);border:2px solid #b78938;border-radius:5px 5px 8px 5px}
+.ring:after{content:"";position:absolute;width:12px;height:12px;left:50%;top:-9px;transform:translateX(-50%) rotate(45deg);background:#fffaf2;border:1px solid #d9b15b;border-radius:3px}
+.ring-caption{font-size:clamp(36px,8vw,66px);font-style:italic;color:var(--red);margin:12px 0}
+.ring-subtitle{font-size:15px;line-height:1.8;color:var(--muted);max-width:400px;margin:0 auto}
+@media(max-width:500px){.pokeball-button{width:150px;height:150px}.ball-top,.ball-bottom{width:140px;height:70px}.ring{width:70px;height:70px;border-width:8px}}
+
+@media(max-width:500px){.screen{padding:22px 16px}#shoot-stage{height:155px}.heart-wrap{height:160px}.corner{width:50px;height:50px}.corner.tl{top:12px;left:12px}.corner.br{bottom:12px;right:12px}}
+
+/* Reference-inspired opening: hinged lid, open bowl, ring nestled inside */
+.pokeball-stage{height:230px;position:relative;display:flex;align-items:center;justify-content:center;margin:10px auto 0}
+.pokeball-button{width:190px;height:190px;margin:0;overflow:visible}
+.pokeball{z-index:1}
+.ball-top{display:block;top:0;left:50%;width:180px;height:94px;border:5px solid #5a2430;border-radius:95px 95px 8px 8px;background:linear-gradient(135deg,#e64b5b,#b51f37 60%,#81182b);transform:translateX(-50%);transform-origin:50% 100%;z-index:4;overflow:hidden;transition:transform .85s cubic-bezier(.2,.8,.2,1)}
+.ball-top:before{content:"";position:absolute;inset:8px 8px 0;border:3px solid #c9c5b8;border-bottom:0;border-radius:88px 88px 0 0;background:radial-gradient(ellipse at 50% 38%,#91b4c9 0 10%,#344257 11% 35%,#202b3e 36% 53%,#71879a 54% 100%)}
+.lid-inner{position:absolute;left:50%;top:19px;transform:translateX(-50%);width:34px;height:34px;border-radius:50%;background:radial-gradient(circle,#d7e1dc 0 22%,#303746 25% 42%,#e6dfcb 45% 56%,#343746 60%);border:2px solid #d8c8a0;z-index:2}
+.ball-bottom{display:block;bottom:0;left:50%;width:180px;height:98px;border:5px solid #6a3440;border-radius:8px 8px 95px 95px;background:linear-gradient(180deg,#fffdf7 0%,#f1e9e2 72%,#d8c9c4 100%);transform:translateX(-50%);z-index:2;overflow:hidden}
+.ball-bottom:before{content:"";position:absolute;left:0;right:0;top:-8px;height:30px;border-radius:50%;background:#4c4b60;border:4px solid #d8c9a9;box-shadow:inset 0 -4px 5px #17192c55}
+.bowl-inner{position:absolute;left:12%;right:12%;top:12px;height:24px;border-radius:50%;background:linear-gradient(#35394e,#151b2c);border:2px solid #d8c9a9;z-index:1}
+.ring-inside{position:absolute;z-index:3;left:50%;top:68px;width:68px;height:68px;transform:translate(-50%,12px) scale(.45);opacity:0;transition:opacity .45s .35s,transform .65s .35s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+.ring-band{position:absolute;left:10px;top:19px;width:48px;height:48px;border:7px solid #d5ae58;border-radius:50%;background:transparent;box-shadow:inset 0 0 0 2px #fff0b9,0 3px 9px #6d3e1c66}
+.ring-gem{position:absolute;left:24px;top:3px;width:22px;height:22px;transform:rotate(45deg);border-radius:4px 4px 8px 4px;background:linear-gradient(135deg,#fffdf4,#f3dfad 45%,#c49a4a);border:2px solid #bd8d3c;box-shadow:0 0 10px #ffe9a6}
+#pokeball-screen.revealed .ball-top{transform:translate(-50%,-76px) rotate(-18deg)}
+#pokeball-screen.revealed .ball-bottom{transform:translateX(-50%)}
+#pokeball-screen.revealed .pokeball{opacity:0}
+#pokeball-screen.revealed .ring-inside{opacity:1;transform:translate(-50%,0) scale(1)}
+.ring-reveal{max-width:440px;margin:0 auto;opacity:0;transform:translateY(10px);transition:opacity .5s .75s,transform .5s .75s}
+#pokeball-screen.revealed .ring-reveal{opacity:1;transform:translateY(0) scale(1)}
+#pokeball-screen.revealed .ball-bottom{box-shadow:0 15px 25px #70202b20}
+@media(max-width:500px){.pokeball-stage{height:205px}.pokeball-button{width:160px;height:160px}.ball-top{width:150px;height:80px}.ball-bottom{width:150px;height:84px}.ring-inside{top:59px;transform:translate(-50%,12px) scale(.45)}#pokeball-screen.revealed .ring-inside{transform:translate(-50%,0) scale(.88)}}
+
+
+/* Artwork-based Poké Ball reveal: closed -> open with ring */
+.artwork-gift{max-width:560px}
+.artwork-ball{position:relative;display:block;width:min(100%,340px);aspect-ratio:3/4;margin:12px auto 6px;padding:0;border:0;border-radius:18px;overflow:hidden;background:#1b1720;cursor:pointer;box-shadow:0 18px 48px #6d26352b;transition:transform .25s,box-shadow .25s}
+.artwork-ball:hover{transform:translateY(-3px);box-shadow:0 24px 56px #6d263544}
+.ball-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .8s ease,transform 1.1s cubic-bezier(.2,.8,.2,1)}
+.closed-art{opacity:1;transform:scale(1)}
+.open-art{opacity:0;transform:scale(1.06)}
+.art-glow{position:absolute;inset:0;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 48%,#ffe8a566,transparent 55%);transition:opacity .7s}
+#pokeball-screen.revealed .closed-art{opacity:0;transform:scale(.93)}
+#pokeball-screen.revealed .open-art{opacity:1;transform:scale(1)}
+#pokeball-screen.revealed .art-glow{opacity:1}
+.artwork-message{opacity:0;transform:translateY(12px);transition:opacity .6s .45s,transform .6s .45s;max-width:440px;margin:0 auto}
+#pokeball-screen.revealed .artwork-message{opacity:1;transform:translateY(0)}
+#pokeball-screen.revealed #ball-instruction{color:#a91f36}
+@media(max-width:500px){.artwork-ball{width:min(100%,300px)}}
+
+
+/* Polished click-to-open sequence */
+.artwork-ball{isolation:isolate;transform-origin:50% 58%;overflow:visible}
+.artwork-ball:before{content:"";position:absolute;inset:0;border-radius:18px;z-index:5;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 50%,#fff7d8 0%,#f8c85d55 22%,transparent 62%)}
+.artwork-ball .ball-art{border-radius:18px}
+.artwork-ball .closed-art{z-index:2}
+.artwork-ball .open-art{z-index:1}
+.artwork-ball:focus-visible{outline:3px solid #c49a4a;outline-offset:5px}
+#pokeball-screen.opening .artwork-ball{animation:ballClick .42s ease-in-out both}
+#pokeball-screen.opening .artwork-ball:before{animation:openingFlash 1.15s ease-out .28s both}
+#pokeball-screen.opening .closed-art{animation:closedBallFade .7s ease-in .36s both}
+#pokeball-screen.opening .open-art{animation:openBallReveal 1s cubic-bezier(.18,.82,.24,1) .48s both}
+#pokeball-screen.opening .art-glow{animation:glowBloom 1.25s ease-out .45s both}
+#pokeball-screen.revealed .artwork-ball{cursor:default}
+#pokeball-screen.revealed .artwork-ball:hover{transform:none;box-shadow:0 18px 48px #6d26352b}
+@keyframes ballClick{
+  0%{transform:scale(1) rotate(0)}
+  30%{transform:scale(.94) rotate(-2deg)}
+  58%{transform:scale(1.045) rotate(2deg)}
+  100%{transform:scale(1) rotate(0)}
+}
+@keyframes openingFlash{
+  0%{opacity:0}
+  28%{opacity:1}
+  100%{opacity:0}
+}
+@keyframes closedBallFade{
+  0%{opacity:1;transform:scale(1)}
+  42%{opacity:1;transform:scale(1.035)}
+  100%{opacity:0;transform:scale(.84)}
+}
+@keyframes openBallReveal{
+  0%{opacity:0;transform:scale(.72) rotate(-3deg);filter:brightness(1.8) blur(3px)}
+  45%{opacity:1;transform:scale(1.035) rotate(1deg);filter:brightness(1.3) blur(0)}
+  100%{opacity:1;transform:scale(1) rotate(0);filter:brightness(1) blur(0)}
+}
+@keyframes glowBloom{
+  0%{opacity:0}
+  35%{opacity:1}
+  100%{opacity:.2}
+}
+#pokeball-screen.opening .artwork-message{animation:messageRise .7s cubic-bezier(.2,.8,.2,1) 1.15s both}
+@keyframes messageRise{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(prefers-reduced-motion:reduce){
+  #pokeball-screen.opening .artwork-ball,
+  #pokeball-screen.opening .artwork-ball:before,
+  #pokeball-screen.opening .closed-art,
+  #pokeball-screen.opening .open-art,
+  #pokeball-screen.opening .art-glow,
+  #pokeball-screen.opening .artwork-message{animation:none}
+}
+
+
+/* Optional video inside a message card */
+.message-video-wrap{margin:22px auto 8px;max-width:100%;position:relative;z-index:1}
+.message-video-wrap[hidden]{display:none!important}
+.message-video{display:block;width:100%;max-height:420px;aspect-ratio:16/9;object-fit:contain;background:#21151a;border:1px solid #d6b66e;box-shadow:0 12px 30px #70202b18}
+
+
+/* Dedicated anime video message */
+.video-message-card{max-width:760px}
+.dedicated-video-wrap{width:100%;margin:24px auto 12px}
+.dedicated-video-wrap .message-video{max-height:min(62vh,620px);aspect-ratio:16/9;border-radius:12px;background:#170f16}
+.video-caption{font-size:13px;letter-spacing:.04em;color:var(--muted);margin:14px 0 22px;text-align:center}
+#anime-video-message .message-nav{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+
+</style>
+</head>
+<body>
+<div id="app">
+  <span class="decor-heart" style="top:13%;left:10%;font-size:24px">♥</span>
+  <span class="decor-heart" style="top:22%;right:12%;font-size:16px;animation-delay:1.5s">♥</span>
+  <span class="decor-heart" style="bottom:15%;left:17%;font-size:18px;animation-delay:2.5s">♥</span>
+  <span class="decor-heart" style="bottom:22%;right:10%;font-size:25px;animation-delay:1s">♥</span>
+
+  <section class="screen active" id="intro">
+    <div class="hero">
+      <div class="eyebrow">a little something, for you</div>
+      <div class="heart-wrap"><div class="heart3d"><span class="heart-shine"></span></div></div>
+      <div class="gold-line"></div>
+      <p class="subtitle">I made a tiny surprise just for you.<br>Ready, sweetheart?</p>
+      <div style="margin-top:28px"><button class="primary" onclick="go('archery')">Open your surprise ♡</button></div>
+    </div>
+  </section>
+
+  <section class="screen" id="archery">
+    <div class="hero">
+      <div class="eyebrow">one little wish, just for you</div>
+      <div id="shoot-stage">
+        <svg viewBox="0 0 680 185" aria-label="Drag the arrow back and release it">
+          <defs>
+            <linearGradient id="shaft" x1="0" x2="1"><stop stop-color="#8b5c36"/><stop offset=".5" stop-color="#d5b06a"/><stop offset="1" stop-color="#79502e"/></linearGradient>
+            <linearGradient id="heartArrow" x1="0" x2="1"><stop stop-color="#e56a74"/><stop offset="1" stop-color="#a91f36"/></linearGradient>
+          </defs>
+          <path d="M100 36 Q38 92 100 148" fill="none" stroke="#7c4c39" stroke-width="5" stroke-linecap="round"/>
+          <path d="M100 36 L100 148" fill="none" stroke="#c9a567" stroke-width="1.5"/>
+          <line id="string" x1="100" y1="36" x2="100" y2="92" stroke="#8f725c" stroke-width="1.5"/>
+          <line x1="100" y1="148" x2="100" y2="92" stroke="#8f725c" stroke-width="1.5"/>
+          <g id="arrow" transform="translate(100 92)">
+            <line x1="0" y1="0" x2="190" y2="0" stroke="url(#shaft)" stroke-width="3" stroke-linecap="round"/>
+            <path d="M190 0 L174 -7 L177 0 L174 7 Z" fill="#b9954e"/>
+            <path d="M0 0 L14 -6 L11 0 L14 6 Z" fill="url(#heartArrow)"/>
+            <path d="M4 -2 L-7 -12 L-3 -1 Z" fill="#a91f36"/>
+            <path d="M4 2 L-7 12 L-3 1 Z" fill="#a91f36"/>
+          </g>
+          <circle cx="560" cy="92" r="39" fill="none" stroke="#d2b36f" stroke-width="1.5" opacity=".8"/>
+          <circle cx="560" cy="92" r="28" fill="none" stroke="#d2b36f" stroke-width="1.5" opacity=".8"/>
+          <circle cx="560" cy="92" r="16" fill="#a91f36" opacity=".9"/>
+          <path d="M552 90 C552 81 563 81 560 91 C557 81 568 81 568 90 C568 98 560 103 560 103 C560 103 552 98 552 90" fill="#fff0d5"/>
+        </svg>
+      </div>
+      <p class="instruction">pull the arrow back & release</p>
+      <p class="tiny">A little birthday magic is waiting ✧</p>
+      <button class="ghost" onclick="autoShoot()" style="margin-top:10px">Or tap here ♡</button>
+    </div>
+  </section>
+
+  <section class="screen" id="birthday">
+    <div class="reveal-card">
+      <div class="corner tl"></div><div class="corner br"></div>
+      <div class="eyebrow">make a wish...</div>
+      <div class="title">Happy<br>Birthday</div>
+      <div class="gold-line"></div>
+      <div class="subtitle">to someone worth celebrating</div>
+      <div id="burst"></div>
+      <div style="margin-top:30px"><button class="primary" onclick="go('personal')">Your birthday story →</button></div>
+    </div>
+  </section>
+
+  <section class="screen" id="personal">
+    <div class="hero">
+      <div class="eyebrow">today is officially your day</div>
+      <div class="heart-wrap" style="height:140px"><div class="heart3d" style="transform:scale(.82)"><span class="heart-shine"></span></div></div>
+      <div class="name" id="recipient-name">Happy Birthday, my love</div>
+      <p class="subtitle" id="personal-line">And just like that, your next chapter begins ✦</p>
+      <p class="tiny" style="margin-top:36px">tap anywhere to continue</p>
+      <button class="ghost" onclick="go('star-scene')" style="margin-top:8px">Make a wish under the stars ✦</button>
+    </div>
+  </section>
+
+
+  <section class="screen" id="star-scene">
+    <div id="starfield" aria-label="Click a star to reveal a birthday wish"></div>
+    <div class="sky-silhouette"></div><div class="sky-hill"></div>
+    <div class="star-copy">
+      <div class="eyebrow">somewhere beneath the same sky</div>
+      <h2 class="star-heading">Make a wish,<br>my love.</h2>
+      <p class="star-instruction">CLICK A STAR<br>LET IT CARRY A WISH TO YOU ✦</p>
+      <div id="star-progress">0 / 5 WISHES FOUND</div>
+      <button class="primary" id="star-continue" onclick="startMessages()" style="margin-top:22px;display:none">Read your little letters →</button>
+    </div>
+  </section>
+
+  <section class="screen" id="message">
+    <div class="content-card">
+      <div class="message-count" id="message-count">A NOTE FOR YOU · 01</div>
+      <h2 class="message-title" id="message-title">Something I want you to know</h2>
+      <div class="message-body" id="message-body"></div>
+      <div class="message-video-wrap" id="message-video-wrap" hidden>
+        <video id="message-video" class="message-video" controls playsinline preload="metadata">
+          Your browser does not support HTML video.
+        </video>
+      </div>
+      <div class="gold-line"></div>
+      <div class="controls">
+        <button class="ghost" id="back-message" onclick="previousMessage()">← Previous</button>
+        <button class="primary" id="next-message" onclick="nextMessage()">Next little note →</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="anime-video-message">
+    <div class="message-card video-message-card">
+      <div class="message-count">A LITTLE ANIME MOMENT · JUST FOR YOU</div>
+      <h2 class="message-title">A little love story ♡</h2>
+      <p class="message-body">This scene reminded me of love, and I wanted to share it with you.</p>
+      <div class="message-video-wrap dedicated-video-wrap">
+        <video id="anime-confession-video" class="message-video" controls playsinline preload="metadata">
+          <source src="assets/orihime-ichigo-confession.mp4" type="video/mp4">
+          Your browser does not support HTML video.
+        </video>
+      </div>
+      <p class="video-caption">Some feelings are hard to put into words. ♡</p>
+      <div class="message-nav">
+        <button class="ghost" onclick="go('message')">← Back to my notes</button>
+        <button class="primary" onclick="go('ending')">Continue →</button>
+      </div>
+    </div>
+  </section>
+
+
+
+  <section class="screen" id="pokeball-scene">
+    <div class="hero">
+      <div class="eyebrow">one last little surprise</div>
+      <h2 style="font-size:clamp(27px,5vw,40px);font-weight:400;color:#a91f36;margin:18px 0 0">Something special is inside…</h2>
+      <div class="poke-wrap" id="poke-wrap" role="button" tabindex="0" aria-label="Open the Poké Ball" onclick="openPokeBall()">
+        <div class="poke-ball"><div class="poke-red"></div><div class="poke-band"></div><div class="poke-button"></div></div>
+        <div class="poke-top"></div><div class="poke-bottom"></div><div class="poke-ring"></div>
+      </div>
+      <div class="poke-reveal" id="poke-reveal">
+        <div class="eyebrow">my favourite choice, always</div>
+        <h2>I choose you.</h2>
+        <p>Out of every person in every world,<br>you'll always be my favourite. ♥</p>
+      </div>
+      <p class="tiny" id="poke-hint">TAP THE POKÉ BALL TO OPEN IT</p>
+      <button class="ghost" onclick="go('intro')" style="margin-top:8px">Play from the beginning ↻</button>
+    </div>
+  </section>
+
+  <section class="screen" id="ending">
+    <div class="hero">
+      <div class="final-heart">♥</div>
+      <div class="eyebrow">the last page, for now</div>
+      <h1 class="title" style="font-size:clamp(42px,9vw,78px)">Always<br>you.</h1>
+      <p class="subtitle" id="ending-line">No matter how many chapters life gives us, you’ll always be one of my favourite stories.</p>
+      <div class="gold-line"></div>
+      <p class="eyebrow">made with all my love ♡</p>
+      <button class="primary" onclick="go('pokeball-screen')">Open your final gift ♡</button>
+    </div>
+  </section>
+  <section class="screen" id="pokeball-screen">
+    <div class="gift-wrap artwork-gift">
+      <div class="eyebrow">a little gift, captured just for you</div>
+      <h2 class="gift-title">One last surprise…</h2>
+      <p class="subtitle" id="ball-instruction">Tap the Poké Ball to open it.</p>
+      <button class="artwork-ball" id="artwork-ball" onclick="openPokeball()" aria-label="Open the Poké Ball and reveal the ring">
+        <img class="ball-art closed-art" src="assets/pokeball-closed.jpg" alt="A closed glossy red and white Poké Ball glowing among flowers">
+        <img class="ball-art open-art" src="assets/pokeball-open-ring.jpg" alt="The Poké Ball opened to reveal a gold marriage ring">
+        <span class="art-glow"></span>
+      </button>
+      <div class="artwork-message" id="artwork-message" aria-live="polite">
+        <div class="ring-caption">I choose you.</div>
+        <p class="ring-subtitle">Out of every person in every universe, you're the one I'd choose. Today, tomorrow, and every day after. ♡</p>
+      </div>
+      <button class="ghost" onclick="go('intro')" style="margin-top:24px">Start our little story again ↻</button>
+    </div>
+  </section>
+</div>
+
+<script>
+
+let ballOpened=false;
+function openPokeball(){
+  const screen=document.getElementById("pokeball-screen");
+  const ball=document.getElementById("artwork-ball");
+  if(screen.classList.contains("opening") || screen.classList.contains("revealed")) return;
+  screen.classList.add("opening");
+  ball.disabled=true;
+  ball.setAttribute("aria-label","Opening the Poké Ball to reveal the ring");
+  document.getElementById("ball-instruction").textContent="A little magic, just for you…";
+  window.setTimeout(()=>{
+    screen.classList.add("revealed");
+    document.getElementById("ball-instruction").textContent="A little promise, just for you ♡";
+    ball.setAttribute("aria-label","The Poké Ball is open and the ring has been revealed");
+  }, 650);
+}
+
+/* ===================== CUSTOMIZE YOUR WEBSITE HERE =====================
+   Change the words inside quotation marks. Add/remove message objects
+   to create as many message screens as you like.
+======================================================================== */
+const SETTINGS = {
+  recipientName: "Happy Birthday, my love",
+  personalLine: "And just like that, your next chapter begins ✦",
+  endingLine: "No matter how many chapters life gives us, you’ll always be one of my favourite stories.",
+  messages: [
+    { title: "First of all…", body: "Happy birthday, baby. ♡\\n\\nI wish I could be right there beside you today, giving you the biggest hug." },
+    { title: "A little reminder", body: "You mean more to me than I can fit into one message. I hope you never forget how special you are to me." },
+    { title: "My favourite person", body: "Thank you for being you—for the laughs, the little moments, and all the memories we’re still going to make." },
+    { title: "One birthday wish", body: "I hope this year brings you peace, happiness, exciting adventures, and so many reasons to smile." },
+    { title: "Until I can hug you", body: "Imagine me holding you really close right now. This is your coupon for one extra-long hug, redeemable when we meet. ♥" }
+  ]
+};
+/* ======================= END OF CUSTOMIZATION ======================== */
+
+document.getElementById("recipient-name").textContent=SETTINGS.recipientName;
+document.getElementById("personal-line").textContent=SETTINGS.personalLine;
+document.getElementById("ending-line").textContent=SETTINGS.endingLine;
+let messageIndex=0;
+
+function openPokeBall(){
+ const wrap=document.getElementById("poke-wrap");
+ if(wrap.classList.contains("opened"))return;
+ wrap.classList.add("opened");
+ document.getElementById("poke-hint").textContent="A SPECIAL SOMEONE HAS BEEN CHOSEN ♥";
+}
+document.getElementById("poke-wrap").addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openPokeBall()}});
+
+function pauseAnimeVideo(nextId){
+  const v=document.getElementById("anime-confession-video");
+  if(v && nextId!=="anime-video-message") v.pause();
+}
+function go(id){pauseAnimeVideo(id);if(id==="star-scene")setupStars();document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");window.scrollTo({top:0,behavior:"smooth"});if(id==="birthday")makeBurst();}
+function autoShoot(){shootArrow();}
+const stage=document.getElementById("shoot-stage"),arrow=document.getElementById("arrow"),string=document.getElementById("string");
+let dragging=false,startX=0,startY=0,dx=0,dy=0;
+function svgPoint(e){const svg=stage.querySelector("svg"),r=svg.getBoundingClientRect();return {x:(e.clientX-r.left)*680/r.width,y:(e.clientY-r.top)*185/r.height}}
+arrow.addEventListener("pointerdown",e=>{if(document.getElementById("archery").classList.contains("active")){dragging=true;const p=svgPoint(e);startX=p.x;startY=p.y;arrow.setPointerCapture(e.pointerId);e.preventDefault();}});
+arrow.addEventListener("pointermove",e=>{if(!dragging)return;const p=svgPoint(e);dx=Math.max(-70,Math.min(0,p.x-startX));dy=Math.max(-48,Math.min(48,p.y-startY));arrow.setAttribute("transform",`translate(${100+dx} ${92+dy})`);string.setAttribute("x2",100+dx);string.setAttribute("y2",92+dy);});
+arrow.addEventListener("pointerup",()=>{if(!dragging)return;dragging=false;if(Math.abs(dx)>20||Math.abs(dy)>18)shootArrow();else resetArrow();});
+function resetArrow(){arrow.style.transition="transform .3s";arrow.setAttribute("transform","translate(100 92)");string.setAttribute("x2",100);string.setAttribute("y2",92);dx=dy=0;setTimeout(()=>arrow.style.transition="",320)}
+function shootArrow(){if(!document.getElementById("archery").classList.contains("active"))return;const a=arrow; a.style.transition="transform .55s cubic-bezier(.2,.8,.3,1)";a.setAttribute("transform","translate(390 92)");string.style.opacity="0";setTimeout(()=>{go("birthday");resetArrow();string.style.opacity="1"},520)}
+function makeBurst(){const box=document.getElementById("burst");box.innerHTML="";for(let i=0;i<34;i++){let p=document.createElement("span");p.className="particle";p.textContent=Math.random()>.35?"♥":"✦";p.style.left="50%";p.style.top="46%";p.style.color=Math.random()>.5?"#b5223b":"#c49a4a";p.style.setProperty("--x",`${(Math.random()-.5)*560}px`);p.style.setProperty("--y",`${(Math.random()-.5)*340}px`);p.style.setProperty("--r",`${Math.random()*180-90}deg`);p.style.animationDelay=`${Math.random()*.3}s`;box.appendChild(p)}}
+
+const STAR_WISHES = [
+  "I wish I could be beside you tonight, looking at the stars with you. ♡",
+  "May this year bring you peace, courage, and a thousand reasons to smile.",
+  "If the sky could keep one promise for me, it would be that you always feel loved.",
+  "No matter how far apart we are, I hope we can always find the same sky.",
+  "My biggest wish is for us to make many more beautiful memories together. ♥"
+];
+let wishesFound = new Set();
+function setupStars(){
+  const field=document.getElementById("starfield");
+  if(field.dataset.ready==="1")return;
+  field.dataset.ready="1";
+  const positions=[
+    [12,18],[24,34],[38,15],[52,27],[67,17],[83,29],[91,13],
+    [18,54],[32,66],[48,49],[62,61],[77,48],[89,67],[7,39],[42,78]
+  ];
+  positions.forEach((pos,i)=>{
+    const b=document.createElement("button");
+    b.className="sky-star";b.type="button";b.textContent=i%4===0?"✦":"✧";
+    b.setAttribute("aria-label","Reveal a birthday wish");
+    b.style.left=pos[0]+"%";b.style.top=pos[1]+"%";
+    b.style.setProperty("--size",(i%3===0?22:i%2===0?17:13)+"px");
+    b.style.setProperty("--twinkle",(2.2+(i%5)*.55)+"s");
+    b.addEventListener("click",()=>revealWish(b,i));
+    field.appendChild(b);
+  });
+}
+function revealWish(star,i){
+  if(wishesFound.size>=STAR_WISHES.length)return;
+  if(star.classList.contains("used"))return;
+  star.classList.add("used");
+  const wishIndex=wishesFound.size;
+  wishesFound.add(i);
+  const shot=document.createElement("span");shot.className="shooting-star";
+  shot.style.left=star.style.left;shot.style.top=star.style.top;
+  document.getElementById("starfield").appendChild(shot);
+  setTimeout(()=>shot.remove(),1200);
+  const pop=document.createElement("div");pop.className="wish-pop";pop.textContent=STAR_WISHES[wishIndex];
+  const x=Math.min(68,Math.max(8,parseFloat(star.style.left)-10));
+  const y=Math.min(72,Math.max(22,parseFloat(star.style.top)+3));
+  pop.style.left=x+"%";pop.style.top=y+"%";
+  document.getElementById("starfield").appendChild(pop);
+  setTimeout(()=>pop.remove(),4200);
+  document.getElementById("star-progress").textContent=wishesFound.size+" / "+STAR_WISHES.length+" WISHES FOUND";
+  if(wishesFound.size>=STAR_WISHES.length)document.getElementById("star-continue").style.display="inline-block";
+}
+function startMessages(){messageIndex=0;showMessage();go("message")}
+
+function showMessage(){
+  const m=SETTINGS.messages[messageIndex];
+  document.getElementById("message-count").textContent=`A NOTE FOR YOU · ${String(messageIndex+1).padStart(2,"0")} / ${String(SETTINGS.messages.length).padStart(2,"0")}`;
+  document.getElementById("message-title").textContent=m.title;
+  document.getElementById("message-body").textContent=m.body.replace(/\\n/g,"\n");
+  const videoWrap=document.getElementById("message-video-wrap");
+  const video=document.getElementById("message-video");
+  if(m.video){
+    videoWrap.hidden=false;
+    if(video.getAttribute("src")!==m.video){video.pause();video.setAttribute("src",m.video);video.load();}
+  }else{
+    video.pause();video.removeAttribute("src");video.load();videoWrap.hidden=true;
+  }
+  document.getElementById("back-message").style.visibility=messageIndex===0?"hidden":"visible";
+  document.getElementById("next-message").textContent=messageIndex===SETTINGS.messages.length-1?"One last thing →":"Next little note →";
+}
+function nextMessage(){if(document.getElementById("personal").classList.contains("active")){messageIndex=0;showMessage();go("message");return}if(!document.getElementById("message").classList.contains("active"))return;if(messageIndex<SETTINGS.messages.length-1){messageIndex++;showMessage()}else go("anime-video-message")}
+function previousMessage(){if(messageIndex>0){messageIndex--;showMessage()}else go("personal")}
+document.getElementById("personal").addEventListener("click",e=>{if(e.target.tagName!=="BUTTON")nextMessage()});
+document.addEventListener("keydown",e=>{if(e.key==="ArrowRight"){if(document.getElementById("personal").classList.contains("active"))nextMessage();else if(document.getElementById("message").classList.contains("active"))nextMessage()}if(e.key==="ArrowLeft"&&document.getElementById("message").classList.contains("active"))previousMessage()});
+</script>
+</body>
+</html>
